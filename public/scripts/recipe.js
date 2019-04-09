@@ -1,4 +1,10 @@
-var socket = io();
+
+
+$('main').append( $('<h2/>').addClass('recipeTitle').text(obj.name) );
+$('main').append( $('<h3/>').addClass('scalarLabel').text('Scalar') );
+$('main').append( $('<input type="number" step="0.01">').attr('id','ingredientScalar').val('1') );
+
+editmode = false;
 
 // Function which scales all ingredients.
 // @param scalar: The scalar to scale everything by
@@ -7,7 +13,7 @@ function scale(scalar,exclude){
     var ingAmounts = $('.recipeIngredientAmount');
     ingAmounts.each(function(i,element){
         if(i != exclude){    
-            var originalval = rec.ingredients[i].amount;
+            var originalval = obj.ingredients[i].amount;
             ingAmounts.eq(i).val((originalval*scalar).toFixed(2));
         }
     });
@@ -27,7 +33,7 @@ container.append( $('<ol/>').attr('id','recipeInstructionsList') );
 $('main').append(container);
 
 // Make a div for each ingredient
-rec.ingredients.forEach(function(ingredient,index){
+obj.ingredients.forEach(function(ingredient,index){
     var item = $('<div/>').addClass('recipeIngredient');
     item.append( $('<span/>').addClass('recipeIngredientName').text(ingredient.name) );
     //The input object for each amount is special and needs to be able to be changed
@@ -38,9 +44,11 @@ rec.ingredients.forEach(function(ingredient,index){
         if(!isNaN($(this).val())){
             var newval = $(this).val();
             if(newval > 0){
-                var scalar = (newval/originalval).toFixed(2);
-                $('#ingredientScalar').val(scalar);
-                scale(scalar,index); //Exclude the current input because otherwise this locks up.
+                if(!editmode) { 
+                    var scalar = (newval/originalval).toFixed(2);
+                    $('#ingredientScalar').val(scalar);
+                    scale(scalar,index); //Exclude the current input because otherwise this locks up.
+                }
             }
         }
     });
@@ -51,9 +59,41 @@ rec.ingredients.forEach(function(ingredient,index){
     $('#recipeIngredientsList').append(li);
 });
 
-rec.instructions.forEach(function(instruction){
+obj.instructions.forEach(function(instruction){
     var inst = $('<div/>').addClass('recipeInstruction');
     inst.append( $('<span/>').addClass('recipeInstructionText').text(instruction) );
     var li = $('<li/>').append(inst);
     $('#recipeInstructionsList').append(li);
 });
+console.log(obj)
+socket.on('loggedUserStatus',function(loggedusername){
+    if(loggeduser == obj.creator){
+        var editbutton = $('<button/>').attr('id','editRecipeButton').text('Edit');
+        editbutton.bind('click',function(){
+            editmode = !editmode;
+            if(!editmode){ //exit edit mode
+                $(this).text('Edit');
+                var ings = [];
+                var ing = $('.recipeIngredient');
+                ing.each(function(i,element){
+                    var name = ing.eq(i)[0].childNodes[0].textContent;
+                    var amount = ing.eq(i)[0].childNodes[1].value;
+                    var unit = ''
+                    if (ing.eq(i)[0].childNodes.length >= 3)
+                        unit = ing.eq(i)[0].childNodes[2].textContent;
+                    newdata = {'name':name, 'amount': amount, 'unit': unit};
+                    ings.push(newdata);
+                });
+                var newdata = {'r_id':obj._id,'ingredients':ings,};
+                socket.emit('updateRecipe',newdata)
+            } else {
+                $(this).text('Save');
+                $('#updateSuccessMessage').remove();
+            }
+        });
+        editbutton.insertAfter( $('.recipeTitle') );
+    }
+});
+socket.on('updateSuccess',function(){
+    $('<span/>').attr('id','updateSuccessMessage').text('Recipe Update Successful').insertAfter( $('#editRecipeButton') );
+})

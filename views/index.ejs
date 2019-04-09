@@ -1,0 +1,31 @@
+<!DOCTYPE HTML>
+
+<html>
+<head>
+	<title>recipe-website</title>
+	<link type="text/css" rel="stylesheet" href="/css/index.css">
+	<link href="https://fonts.googleapis.com/icon?family=Material+Icons" rel="stylesheet">
+	<script src="http://code.jquery.com/jquery-1.6.2.min.js"></script>
+	<script src="/socket.io/socket.io.js"></script>
+</head>
+<body>
+<h1>Recipes</h1>
+<ul id="nav">
+	<li id='navHome'><a href="/">Home</a></li>
+	<li id='navRecipes'><a href="/recipes">Recipes</a></li>
+	<li id='navCreate'><a href="/create">Create Recipe</a></li>
+	<li id='navSignUp'><a href="/users/signup">Sign Up</a></li>
+	<li id='navLogIn'><a href="/users/login">Log In</a></li>
+</ul>
+
+<main>
+</main>
+
+
+<script src="http://code.jquery.com/jquery-1.6.2.min.js"></script>
+<script type='text/javascript'> var obj = <%- JSON.stringify(object) %> </script>
+<script type="text/javascript" src="/scripts/getuserstatus.js"></script>
+<script type="text/javascript" src="/scripts/<%- script %>"></script>
+</body>
+</html>
+

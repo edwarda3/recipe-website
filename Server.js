@@ -1,6 +1,5 @@
 var fs = require('fs');
 var express = require('express');
-var bodyParser = require('body-parser');
 var mongo = require('mongodb');
 var mongoose = mongo.MongoClient;
 
@@ -13,7 +12,17 @@ mongoose.connect(url,function(err,db){
 
 var app = require('express')(),
 	http = require('http').Server(app),
-	io = require('socket.io')(http);
+	io = require('socket.io')(http),
+	session = require('express-session')({
+		secret: 'randomsecret1234',
+		resave: true,
+		saveUninitialized: true
+	}),
+	sharedsession = require('express-socket.io-session');
+app.use(session);
+io.use(sharedsession(session,{
+	autoSave:true
+}));
 
 //server startup
 http.listen(parseInt(process.argv[2]), function(){
@@ -21,14 +30,41 @@ http.listen(parseInt(process.argv[2]), function(){
 });
 
 //routings
+app.set('view engine', 'ejs');
 app.get('/', function(req, res){
-	res.sendFile(__dirname + '/public/index.html');
+	res.render('index.ejs', {'script': 'index.js','object':null});
 });
 app.get('/create', function(req, res){
-	res.sendFile(__dirname + '/public/create.html');
+	res.render('index.ejs', {'script': 'create.js','object':null});
+});
+app.get('/users/signup', function(req, res){
+	res.render('index.ejs', {'script': 'signup.js','object':null});
+});
+app.get('/users/login', function(req, res){
+	res.render('index.ejs', {'script': 'login.js','object':null});
+});
+app.get('/users/logout', function(req, res){
+	req.session.destroy();
+	res.redirect('/users/login');
+});
+app.get('/users/profile/:username', function(req, res){
+	var username = req.params.username;
+	mongoose.connect(url,function(err,db){
+		if(err)
+			throw err;
+		else{
+			var dbo = db.db('recipes');
+			dbo.collection('users').findOne({'username':username},function(err,userdata){
+				if(err)
+					throw err; //TODO send 404 page
+				res.render('index.ejs', {'script':'userpage.js','object': userdata.username});
+				db.close();
+			});
+		}
+	});
 });
 app.get('/recipes', function(req, res){
-	res.sendFile(__dirname + '/public/recipes.html');
+	res.render('index.ejs', {'script': 'recipes.js','object':null});
 });
 //Get the recipe ID and get the data, send that data to the client
 app.get('/recipes/:recipeID', function(req, res){
@@ -42,9 +78,8 @@ app.get('/recipes/:recipeID', function(req, res){
 			dbo.collection('recipes').findOne(r_id,function(err,recipe){
 				if(err)
 					throw err;
-				app.set('view engine', 'ejs');
 				//We send the recipe object, which has fields name,ingredients[],instructions[].
-				res.render('recipe.ejs', {'recipe': recipe});
+				res.render('index.ejs', {'script':'recipe.js','object': recipe});
 				db.close();
 			});
 		}
@@ -52,7 +87,19 @@ app.get('/recipes/:recipeID', function(req, res){
 });
 app.use(express.static('public')); //serves index.html
 
+
+
 io.on('connection',function(socket){
+
+	socket.on('getLoggedStatus',function(){
+		var username = socket.handshake.session.username;
+		if(username == null){
+			socket.emit('noLoggedUser')
+		}
+		else{
+			socket.emit('loggedUserStatus',username)
+		}
+	});
 
 	//Inserting a single recipe
 	socket.on('insertRecipe',function(data){
@@ -72,6 +119,24 @@ io.on('connection',function(socket){
 		});
 	});
 
+	socket.on('updateRecipe',function(data){
+		mongoose.connect(url,function(err,db){
+			if(err)
+				throw err;
+			else{
+				var r_id = new mongo.ObjectID(data.r_id);
+				var dbo = db.db('recipes');
+				dbo.collection('recipes').updateOne({'_id':r_id},{$set:{'ingredients':data.ingredients}},function(err,res){
+					if(err)
+						throw err;
+					console.log('Updated r_id '+data.r_id+' to '+data.ingredients);
+					socket.emit('updateSuccess')
+					db.close();
+				});
+			}
+		});
+	});
+
 	//Getting recipes from the skip index.
 	//Retreives 20 values at a time.
 	socket.on('getRecipes',function(skip){
@@ -86,6 +151,53 @@ io.on('connection',function(socket){
 				else socket.emit('recipes',res)
 				db.close();
 			});
+		});
+	});
+	socket.on('registerNewUser',function(user){
+		mongoose.connect(url,function(err,db){
+			if(err){
+				socket.emit('connectionError');
+				throw err;
+			}
+			var dbo = db.db('recipes');
+			var lusername = user.username.toLowerCase();
+			dbo.collection('users').findOne({'low_username':lusername},function(err,founduser){
+				if(err)
+						throw err;
+				if(founduser == null){
+					var insertuser = {'username': user.username,'low_username': lusername, 'hashedpw': user.hashedpw};
+					dbo.collection('users').insertOne(insertuser,function(err,res){
+						if(err) socket.emit('connectionError');
+						else{
+							socket.handshake.session.username = user.username;
+							socket.handshake.session.save();
+							console.log('Registered '+user.username)
+							socket.emit('registrationSuccess',user.username);
+						}
+						db.close();
+					});
+				}
+			});
+		});
+	});
+	socket.on('loginAttempt',function(userdata){
+		mongoose.connect(url,function(err,db){
+			if(err)
+				throw err;
+			else{
+				var dbo = db.db('recipes');
+				var lusername = userdata.username.toLowerCase();
+				dbo.collection('users').findOne({'low_username':lusername,'hashedpw':userdata.hashedpw},function(err,founduser){
+					if(err)
+						throw err;
+					if(founduser != null){
+						socket.handshake.session.username = founduser.username;
+						socket.handshake.session.save();
+						console.log('Logged in '+founduser.username)
+						socket.emit('loginSuccess',founduser.username);
+					} else socket.emit('loginFailure');
+				});
+			}
 		});
 	});
 });

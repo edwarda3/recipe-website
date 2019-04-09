@@ -1,4 +1,3 @@
-var socket = io();
 
 //The form has ingredient and Instruction Sections.
 var form = $('<form>').attr('id','addRecipeForm');
@@ -47,6 +46,9 @@ addInstButton.click(addInst);
 var commitButton = $('<button/>').addClass('commitButton createButton').text('Save');
 commitButton.click(function(){
     $('.insertionErrorMessage').remove();
+    if(loggeduser == null){
+        $('main').append( $('<span/>').addClass('insertionErrorMessage').text('You must be logged into perform this action.') )
+    }
 
     var name = $('.recipeName')[0].value;
     
@@ -66,7 +68,7 @@ commitButton.click(function(){
         insts.push(obj.childNodes[1].value);
     });
     if(ings.length>0 && inst.length > 0){
-        var recipe = {'name':name,'ingredients':ings,'instructions':insts};
+        var recipe = {'creator':loggeduser,'name':name,'ingredients':ings,'instructions':insts};
         socket.emit('insertRecipe',recipe)
     }
     else{
@@ -85,4 +87,8 @@ socket.on('connectionError',function(){
 socket.on('insertionSuccess',function(id){
     console.log('Successfully inserted recipe into database.')
     window.location.href = '/recipes/'+id;
+});
+
+socket.on('noLoggedUser',function(){
+    $('main').prepend( $('<span/>').addClass('loggedStatusWarning').text('Note: You must be logged in to create recipes') );
 });
