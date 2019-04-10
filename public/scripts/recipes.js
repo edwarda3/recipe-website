@@ -8,7 +8,7 @@ $('main').append( $('<p/>').attr('id','loadingText').text('Loading Recipes...') 
 
 $('main').append(container);
 
-socket.emit('getRecipes',0);
+socket.emit('getRecipes',{});
 
 socket.on('recipes',function(res){
     $('#loadingText').remove()

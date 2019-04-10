@@ -19,7 +19,7 @@ function error(eid){
     var str = 'Something went wrong...'
     if(eid==1) str = 'Passwords do not match.';
     if(eid==2) str = 'Passwords does not meet length requirement (8).';
-    $('main').append( $('<span/>').addClass('registrationErrorMessage').text(str) )
+    $('main').append( $('<span/>').addClass('failureMessage registrationErrorMessage').text(str) )
 }
 
 function hashCode(str){

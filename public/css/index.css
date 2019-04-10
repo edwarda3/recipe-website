@@ -1,5 +1,5 @@
 html{
-	background-color:rgb(255, 252, 243);
+	background-color:rgb(243, 243, 243);
 }
 h1{
 	font-size:84px;
@@ -34,4 +34,84 @@ body{
 }
 #nav li a:visited{
 	color:rgb(70,70,70);
+}
+
+#recipeList li{
+	display:block;
+	width:200px;
+	float:left;
+}
+
+input{
+	border-radius: 5px;
+	padding:7px;
+	margin:5px;
+}
+button{
+	padding:5px;
+	background-color:rgb(235, 235, 235);
+	border: 1px solid rgb(173, 173, 173);
+}
+
+.recipeName{
+	background-color: rgb(255, 252, 243);
+	border: 1px solid rgb(173, 173, 173);
+}
+
+.recipeSectionLabel,.scalarLabel{
+	display:inline;
+	margin-right: 10px;
+}
+.ingNameInput{
+	width:50%;
+}
+
+.instInput{
+	width:90%;
+}
+
+#registrationForm,#loginForm{
+	width:90%;
+}
+#usernameEntry,#passwordEntry,#passwordEntry2{
+	width:400px;
+}
+
+#ingredientScalar{
+	width: 3em;
+}
+#recipeIngredientsList{
+	list-style-type:none;
+}
+#recipeIngredientsList li{
+	display:inline-block;
+}
+.recipeIngredient{
+	width:500px;
+	text-align:right;
+}
+.recipeIngredientName{
+	float:left;
+}
+.recipeIngredientAmount{
+	width:5em;
+	background-color: rgb(255, 252, 243);
+	border:none;
+	text-align:right;
+}
+.recipeInstruction{
+	width:90%;
+	text-align:left;
+}
+#editRecipeButton,#deleteRecipeButton{
+	margin: 10px auto;
+	display:block;
+}
+.successMessage{
+	display:block;
+	color:rgb(0, 43, 2);
+}
+.failureMessage{
+	display:block;
+	color:rgb(61, 0, 0);
 }

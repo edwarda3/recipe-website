@@ -8,5 +8,6 @@ socket.on('loggedUserStatus',function(loggedusername){
 
     $('#navSignUp').remove()
     $('#navLogIn').remove()
+    $('#nav').append( $('<li/>').attr('id','navMyPage').append( $('<a/>',{ text:'My Profile', href:'/users/profile/'+loggedusername }) ) );
     $('#nav').append( $('<li/>').attr('id','navLogOut').append( $('<a/>',{ text:'Log Out', href:'/users/logout' }) ) );
 });

@@ -5,15 +5,15 @@ form.append('Name: <input class="recipeName" type="text" placeholder="Recipe Nam
 
 //Ingredients
 form.append($('<hr>'))
-form.append($('<h3/>').text('Ingredients'))
-var addIngButton = $('<button/>').addClass('addButton createButton').text('Add Ingredient');
+form.append($('<h3/>').addClass('recipeSectionLabel').text('Ingredients'))
+var addIngButton = $('<button/>').addClass('addButton createButton').text('+');
 form.append(addIngButton);
 form.append($('<div/>').attr('id','recipeIngredients'));
 
 //Instructions
 form.append($('<hr>'))
-form.append($('<h3/>').text('Instructions'))
-var addInstButton = $('<button/>').addClass('addButton createButton').text('Add Instruction');
+form.append($('<h3/>').addClass('recipeSectionLabel').text('Instructions'))
+var addInstButton = $('<button/>').addClass('addButton createButton').text('+');
 form.append(addInstButton);
 form.append($('<div/>').attr('id','recipeInstructions'));
 

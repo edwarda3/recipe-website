@@ -65,7 +65,7 @@ obj.instructions.forEach(function(instruction){
     var li = $('<li/>').append(inst);
     $('#recipeInstructionsList').append(li);
 });
-console.log(obj)
+
 socket.on('loggedUserStatus',function(loggedusername){
     if(loggeduser == obj.creator){
         var editbutton = $('<button/>').attr('id','editRecipeButton').text('Edit');
@@ -92,8 +92,19 @@ socket.on('loggedUserStatus',function(loggedusername){
             }
         });
         editbutton.insertAfter( $('.recipeTitle') );
+
+        var delbutton = $('<button/>').attr('id','deleteRecipeButton').text('Delete');
+        delbutton.bind('click',function(){
+            if(confirm('Do you really want to delete recipe: '+obj.name))
+                socket.emit('deleteRecipe',{'r_id':obj._id});
+        });
+        delbutton.insertAfter( editbutton );
     }
 });
 socket.on('updateSuccess',function(){
-    $('<span/>').attr('id','updateSuccessMessage').text('Recipe Update Successful').insertAfter( $('#editRecipeButton') );
+    $('<span/>').attr('id','updateSuccessMessage').addClass('successMessage').text('Recipe Update Successful').insertAfter( $('#editRecipeButton') );
+})
+socket.on('deleteSuccess',function(){
+    alert('Successfully deleted recipe');
+    window.location.href = '/recipes'
 })

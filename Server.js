@@ -3,6 +3,7 @@ var express = require('express');
 var mongo = require('mongodb');
 var mongoose = mongo.MongoClient;
 
+var mongourl = ""
 var url = "mongodb://localhost:27017/";
 
 mongoose.connect(url,function(err,db){
@@ -32,7 +33,7 @@ http.listen(parseInt(process.argv[2]), function(){
 //routings
 app.set('view engine', 'ejs');
 app.get('/', function(req, res){
-	res.render('index.ejs', {'script': 'index.js','object':null});
+	res.redirect('/recipes');
 });
 app.get('/create', function(req, res){
 	res.render('index.ejs', {'script': 'create.js','object':null});
@@ -129,7 +130,7 @@ io.on('connection',function(socket){
 				dbo.collection('recipes').updateOne({'_id':r_id},{$set:{'ingredients':data.ingredients}},function(err,res){
 					if(err)
 						throw err;
-					console.log('Updated r_id '+data.r_id+' to '+data.ingredients);
+					console.log('Updated r_id '+data.r_id);
 					socket.emit('updateSuccess')
 					db.close();
 				});
@@ -137,16 +138,34 @@ io.on('connection',function(socket){
 		});
 	});
 
-	//Getting recipes from the skip index.
-	//Retreives 20 values at a time.
-	socket.on('getRecipes',function(skip){
+	socket.on('deleteRecipe',function(data){
+		mongoose.connect(url,function(err,db){
+			if(err)
+				throw err;
+			else{
+				var r_id = new mongo.ObjectID(data.r_id);
+				var dbo = db.db('recipes');
+				dbo.collection('recipes').deleteOne({'_id':r_id},function(err,res){
+					if(err)
+						throw err;
+					console.log('Deleted r_id '+data.r_id);
+					socket.emit('deleteSuccess')
+					db.close();
+				});
+			}
+		});
+	});
+
+	socket.on('getRecipes',function(data){
 		mongoose.connect(url,function(err,db){
 			if(err){
 				socket.emit('connectionError');
 				throw err;
 			}
 			var dbo = db.db('recipes');
-			dbo.collection('recipes').find().limit(10).skip(skip).toArray(function(err,res){
+			var filter = {};
+			if(data.username != null) filter['creator'] = data.username;
+			dbo.collection('recipes').find(filter).toArray(function(err,res){
 				if(err) socket.emit('connectionError');
 				else socket.emit('recipes',res)
 				db.close();

@@ -33,5 +33,5 @@ socket.on('loginSuccess',function(username){
     window.location.href = '/users/profile/'+username;
 })
 socket.on('loginFailure',function(){
-    $('main').append( $('<span/>').addClass('loginErrorMessage').text('Failed to Login') )
+    $('main').append( $('<span/>').addClass('failureMessage loginErrorMessage').text('Failed to Login') )
 })
