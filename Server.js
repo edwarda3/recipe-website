@@ -6,7 +6,7 @@ var mongoose = mongo.MongoClient;
 
 var dbuser = config.user;
 var dbpass = config.pass;
-var mongoremote = '3.19.125.92';
+var mongoremote = config.dbip;
 var url = "mongodb://"+dbuser+":"+dbpass+"@"+mongoremote+":27017/recipes";
 
 mongoose.connect(url,function(err,db){
