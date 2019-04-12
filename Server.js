@@ -6,7 +6,7 @@ var mongoose = mongo.MongoClient;
 
 var dbuser = config.user;
 var dbpass = config.pass;
-var url = "mongodb://recipesrw:h0sdA6FGHB2@localhost:27017/recipes";
+var url = "mongodb://"+dbuser+":"+dbpass+"@localhost:27017/recipes";
 
 mongoose.connect(url,function(err,db){
 	if(err) throw err;
