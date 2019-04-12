@@ -6,7 +6,8 @@ var mongoose = mongo.MongoClient;
 
 var dbuser = config.user;
 var dbpass = config.pass;
-var url = "mongodb://"+dbuser+":"+dbpass+"@localhost:27017/recipes";
+var mongoremote = '3.19.125.92';
+var url = "mongodb://"+dbuser+":"+dbpass+"@"+mongoremote+":27017/recipes";
 
 mongoose.connect(url,function(err,db){
 	if(err) throw err;
@@ -36,8 +37,9 @@ app.use(function(req,res,next){
 });
 */
 
+const server_port = 3000
 //server startup
-http.listen(parseInt(process.argv[2]), function(){
+http.listen(server_port, function(){
 	console.log("server running on port " + this.address().port);
 });
 

@@ -24,7 +24,7 @@ function addIng(){
     var ingredientname = $('<input type="text" placeholder="Name" />').addClass('ingNameInput');
     var ingredientamount = $('<input type="number" step="0.05" placeholder="Amount" />').addClass('ingAmountInput');
     var ingredientunit = $('<input type="text" placeholder="Unit" />').addClass('ingUnitInput');
-    var remButton = $('<button/>').addClass('remButton').text('🗙');
+    var remButton = $('<i/>').addClass('material-icons buttonIcon').html('close');    
     remButton.bind('click',function(){section.remove();});
     section.append(ingredientname,ingredientamount,ingredientunit,remButton);
     $('#recipeIngredients').append(section);
@@ -36,8 +36,8 @@ function addIng(){
 function addInst(){
     var section = $('<div/>').addClass('instructionDiv');
     var label = $('<span/>').text($('.instructionDiv').length +1 + ':  ');
-    var inst = $('<input type="text" placeholder="Instruction" />').addClass('instInput');
-    var remButton = $('<button/>').addClass('remButton').text('🗙');
+    var inst = $('<textarea rows="1" type="text" placeholder="Instruction" />').addClass('instInput');
+    var remButton = $('<i/>').addClass('material-icons buttonIcon').html('close');
     remButton.bind('click',function(){section.remove();});
     section.append(label,inst,remButton);
     $('#recipeInstructions').append(section);

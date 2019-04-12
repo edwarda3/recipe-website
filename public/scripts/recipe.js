@@ -29,12 +29,15 @@ $('#ingredientScalar').bind('input',function(){
 
 var container = $('<div/>').attr('id','recipeContainer');
 container.append( $('<ul/>').attr('id','recipeIngredientsList') );
+container.append( $('<hr>') );
+container.append( $('<h3/>').addClass('recipeInstructionsLabel').text('Instructions') );
 container.append( $('<ol/>').attr('id','recipeInstructionsList') );
 $('main').append(container);
 
 // Make a div for each ingredient
 obj.ingredients.forEach(function(ingredient,index){
     var item = $('<div/>').addClass('recipeIngredient');
+    item.append( $('<hr>'));
     item.append( $('<span/>').addClass('recipeIngredientName').text(ingredient.name) );
     //The input object for each amount is special and needs to be able to be changed
     var input = $('<input type=number step=0.01 value/>').addClass('recipeIngredientAmount').val(ingredient.amount);
@@ -68,6 +71,7 @@ obj.instructions.forEach(function(instruction){
 
 socket.on('loggedUserStatus',function(loggedusername){
     if(loggeduser == obj.creator){
+        var recipeModDiv = $('<div/>').attr('id','recipeMod');
         var editbutton = $('<button/>').attr('id','editRecipeButton').text('Edit');
         editbutton.bind('click',function(){
             editmode = !editmode;
@@ -91,14 +95,15 @@ socket.on('loggedUserStatus',function(loggedusername){
                 $('#updateSuccessMessage').remove();
             }
         });
-        editbutton.insertAfter( $('.recipeTitle') );
 
         var delbutton = $('<button/>').attr('id','deleteRecipeButton').text('Delete');
         delbutton.bind('click',function(){
             if(confirm('Do you really want to delete recipe: '+obj.name))
                 socket.emit('deleteRecipe',{'r_id':obj._id});
         });
-        delbutton.insertAfter( editbutton );
+        recipeModDiv.append(editbutton);
+        recipeModDiv.append(delbutton);
+        recipeModDiv.insertAfter( $('.recipeTitle') );
     }
 });
 socket.on('updateSuccess',function(){

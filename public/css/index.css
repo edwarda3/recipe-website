@@ -1,6 +1,12 @@
 html{
 	background-color:rgb(243, 243, 243);
 }
+*{
+	font-family: Helvetica;
+}
+h1,h2,h3,h4,h5,h6{
+	font-family: Times;
+}
 h1{
 	font-size:56px;
 }
@@ -47,10 +53,18 @@ input{
 	padding:7px;
 	margin:5px;
 }
+textarea{
+	border-radius: 5px;
+	padding:7px;
+	margin:5px;
+}
 button{
 	padding:5px;
 	background-color:rgb(235, 235, 235);
 	border: 1px solid rgb(173, 173, 173);
+}
+.buttonIcon{
+    cursor:pointer;
 }
 
 .recipeName{
@@ -99,7 +113,9 @@ button{
 	width:5em;
 	background-color: rgb(255, 252, 243);
 	border:none;
+    padding:2px;
 	text-align:right;
+    font-size: 90%;
 }
 #recipeInstructionsList{
 	width:95%;
@@ -109,9 +125,20 @@ button{
 .recipeInstruction{
 	text-align:left;
 }
+.recipeTitle,{
+    margin-bottom: 8px;
+}
+.recipeInstructionsLabel{
+    margin: 5px auto;
+}
+#recipeMod{
+    display: block;
+    margin: 0 auto;
+    margin-bottom: 12px;
+}
 #editRecipeButton,#deleteRecipeButton{
-	margin: 10px auto;
-	display:block;
+	margin: 0 5px;
+	display:inline-block;
 }
 .successMessage{
 	display:block;
