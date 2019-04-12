@@ -1,10 +1,12 @@
 var fs = require('fs');
+var config = require('./config.json');
 var express = require('express');
 var mongo = require('mongodb');
 var mongoose = mongo.MongoClient;
 
-var mongourl = ""
-var url = "mongodb://localhost:27017/";
+var dbuser = config.user;
+var dbpass = config.pass;
+var url = "mongodb://recipesrw:h0sdA6FGHB2@localhost:27017/recipes";
 
 mongoose.connect(url,function(err,db){
 	if(err) throw err;
@@ -24,6 +26,15 @@ app.use(session);
 io.use(sharedsession(session,{
 	autoSave:true
 }));
+
+/*
+app.use(function(req,res,next){
+    if(!req.secure){
+        return res.redirect(['https://',req.get('Host'),req.url].join(''));
+    }
+    next();
+});
+*/
 
 //server startup
 http.listen(parseInt(process.argv[2]), function(){
