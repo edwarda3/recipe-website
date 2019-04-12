@@ -1,7 +1,8 @@
 
 //The form has ingredient and Instruction Sections.
 var form = $('<form>').attr('id','addRecipeForm');
-form.append('Name: <input class="recipeName" type="text" placeholder="Recipe Name"/>');
+form.append('Name: <input class="recipeName" type="text" placeholder="Recipe Name"/><br>');
+form.append('Servings: <input class="recipeServings" type="number" placeholder="Servings"/>');
 
 //Ingredients
 form.append($('<hr>'))
@@ -23,7 +24,9 @@ function addIng(){
     var ingredientname = $('<input type="text" placeholder="Name" />').addClass('ingNameInput');
     var ingredientamount = $('<input type="number" step="0.05" placeholder="Amount" />').addClass('ingAmountInput');
     var ingredientunit = $('<input type="text" placeholder="Unit" />').addClass('ingUnitInput');
-    section.append(ingredientname,ingredientamount,ingredientunit);
+    var remButton = $('<button/>').addClass('remButton').text('🗙');
+    remButton.bind('click',function(){section.remove();});
+    section.append(ingredientname,ingredientamount,ingredientunit,remButton);
     $('#recipeIngredients').append(section);
     //Prevent form button from refreshing page.
     return false;
@@ -34,7 +37,9 @@ function addInst(){
     var section = $('<div/>').addClass('instructionDiv');
     var label = $('<span/>').text($('.instructionDiv').length +1 + ':  ');
     var inst = $('<input type="text" placeholder="Instruction" />').addClass('instInput');
-    section.append(label,inst);
+    var remButton = $('<button/>').addClass('remButton').text('🗙');
+    remButton.bind('click',function(){section.remove();});
+    section.append(label,inst,remButton);
     $('#recipeInstructions').append(section);
     return false;
 }
@@ -45,12 +50,23 @@ addInstButton.click(addInst);
 //Save and pack recipe into object to send to server and db.
 var commitButton = $('<button/>').addClass('commitButton createButton').text('Save');
 commitButton.click(function(){
-    $('.insertionErrorMessage').remove();
+    $('.failureMessage').remove();
+    var valid = true;
     if(loggeduser == null){
-        $('main').append( $('<span/>').addClass('insertionErrorMessage').text('You must be logged into perform this action.') )
+        $('main').append( $('<span/>').addClass('failureMessage').text('You must be logged into perform this action.') );
+        valid = false;
     }
 
-    var name = $('.recipeName')[0].value;
+    var name = $('.recipeName').val();
+    var servings = $('.recipeServings').val();
+    if(!name){
+        $('main').append( $('<span/>').addClass('failureMessage').text('Needs a name!.') );
+        valid = false;
+    }
+    if(!servings){
+        $('main').append( $('<span/>').addClass('failureMessage').text('Needs a serving count!.') );
+        valid = false;
+    }
     
     //Store ingredients as an array of objects.
     //Each object should have {name,amount,unit} elements.
@@ -67,12 +83,13 @@ commitButton.click(function(){
     $('.instructionDiv').each(function(i,obj){
         insts.push(obj.childNodes[1].value);
     });
-    if(ings.length>0 && inst.length > 0){
-        var recipe = {'creator':loggeduser,'name':name,'ingredients':ings,'instructions':insts};
-        socket.emit('insertRecipe',recipe)
+    if(ings.length<=0 && insts.length <= 0){
+        $('main').append( $('<span/>').addClass('failureMessage').text('Please enter at least one ingredient and one instruction.') )
+        valid = false;
     }
-    else{
-        $('main').append( $('<span/>').addClass('insertionErrorMessage').text('Please enter at least one ingredient and one instruction.') )
+    if(valid){
+        var recipe = {'creator':loggeduser,'name':name,'servings':servings,'ingredients':ings,'instructions':insts};
+        socket.emit('insertRecipe',recipe)
     }
 });
 

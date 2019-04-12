@@ -2,7 +2,7 @@
 
 $('main').append( $('<h2/>').addClass('recipeTitle').text(obj.name) );
 $('main').append( $('<h3/>').addClass('scalarLabel').text('Scalar') );
-$('main').append( $('<input type="number" step="0.01">').attr('id','ingredientScalar').val('1') );
+$('main').append( $('<input type="number" step="0.01">').attr('id','ingredientScalar').val(obj.servings) );
 
 editmode = false;
 

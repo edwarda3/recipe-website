@@ -2,7 +2,7 @@ html{
 	background-color:rgb(243, 243, 243);
 }
 h1{
-	font-size:84px;
+	font-size:56px;
 }
 
 body{
@@ -81,13 +81,15 @@ button{
 	width: 3em;
 }
 #recipeIngredientsList{
+	width:95%;
+	max-width:500px;
 	list-style-type:none;
+	margin:0 auto;
 }
 #recipeIngredientsList li{
-	display:inline-block;
+	display:block;
 }
 .recipeIngredient{
-	width:500px;
 	text-align:right;
 }
 .recipeIngredientName{
@@ -99,8 +101,12 @@ button{
 	border:none;
 	text-align:right;
 }
+#recipeInstructionsList{
+	width:95%;
+	max-width:800px;
+	margin:0 auto;
+}
 .recipeInstruction{
-	width:90%;
 	text-align:left;
 }
 #editRecipeButton,#deleteRecipeButton{
