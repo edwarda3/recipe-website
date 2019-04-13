@@ -140,7 +140,7 @@ io.on('connection',function(socket){
 			else{
 				var r_id = new mongo.ObjectID(data.r_id);
 				var dbo = db.db('recipes');
-				dbo.collection('recipes').updateOne({'_id':r_id},{$set:{'ingredients':data.ingredients}},function(err,res){
+				dbo.collection('recipes').updateOne({'_id':r_id},{$set:{'servings':data.servings,'ingredients':data.ingredients,'instructions':data.instructions}},function(err,res){
 					if(err)
 						throw err;
 					console.log('Updated r_id '+data.r_id);

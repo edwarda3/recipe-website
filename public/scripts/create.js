@@ -7,14 +7,14 @@ form.append('Servings: <input class="recipeServings" type="number" placeholder="
 //Ingredients
 form.append($('<hr>'))
 form.append($('<h3/>').addClass('recipeSectionLabel').text('Ingredients'))
-var addIngButton = $('<button/>').addClass('addButton createButton').text('+');
+var addIngButton = $('<i/>').addClass('material-icons buttonIcon').html('add');
 form.append(addIngButton);
 form.append($('<div/>').attr('id','recipeIngredients'));
 
 //Instructions
 form.append($('<hr>'))
 form.append($('<h3/>').addClass('recipeSectionLabel').text('Instructions'))
-var addInstButton = $('<button/>').addClass('addButton createButton').text('+');
+var addInstButton = $('<i/>').addClass('material-icons buttonIcon').html('add');
 form.append(addInstButton);
 form.append($('<div/>').attr('id','recipeInstructions'));
 
@@ -32,13 +32,22 @@ function addIng(){
     return false;
 }
 
+function cascade(){
+    $('.instructionDiv span').each(function(index){
+        $(this).text((index+1).toString()+': ');
+    });
+}
+
 //Function for adding instructions
 function addInst(){
-    var section = $('<div/>').addClass('instructionDiv');
+    var section = $('<div/>').addClass('instructionDiv').attr('draggable','true');
     var label = $('<span/>').text($('.instructionDiv').length +1 + ':  ');
     var inst = $('<textarea rows="1" type="text" placeholder="Instruction" />').addClass('instInput');
-    var remButton = $('<i/>').addClass('material-icons buttonIcon').html('close');
-    remButton.bind('click',function(){section.remove();});
+    var remButton = $('<i/>').addClass('material-icons buttonIcon removeDiv').html('close');
+    remButton.bind('click',function(){
+        section.remove();
+        cascade();
+    });
     section.append(label,inst,remButton);
     $('#recipeInstructions').append(section);
     return false;
