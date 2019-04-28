@@ -13,9 +13,7 @@ function scale(scalar,exclude){
     var ingAmounts = $('.recipeIngredientAmount');
     ingAmounts.each(function(i,element){
         if(i != exclude){
-            var originalval = obj.ingredients[i].amount;
-            var originalScalar = obj.servings;
-            var newval = (originalval*scalar)/originalScalar;
+            var newval = obj.ingredients[i].amount * scalar;
             ingAmounts.eq(i).val(newval.toFixed(2));
         }
     });
@@ -24,7 +22,7 @@ function scale(scalar,exclude){
 // Bind an input event to change the scaling of ingredients
 $('#ingredientScalar').bind('input',function(){
     if(!isNaN($(this).val()) && !editmode){
-        var scalar = parseFloat($(this).val()).toFixed(2);
+        var scalar = parseFloat($(this).val()/obj.servings).toFixed(2);
         if(scalar > 0) scale(scalar,-1);
     }
 });
@@ -51,7 +49,8 @@ obj.ingredients.forEach(function(ingredient,index){
             if(newval > 0){
                 if(!editmode) { 
                     var scalar = (newval/originalval).toFixed(2);
-                    $('#ingredientScalar').val(scalar);
+                    var newServSize = (scalar*obj.servings).toFixed(2);
+                    $('#ingredientScalar').val(newServSize);
                     scale(scalar,index); //Exclude the current input because otherwise this locks up.
                 }
             }
