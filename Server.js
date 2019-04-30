@@ -51,6 +51,9 @@ app.get('/', function(req, res){
 app.get('/create', function(req, res){
 	res.render('index.ejs', {'script': 'create.js','object':null});
 });
+app.get('/convert', function(req, res){
+	res.render('index.ejs', {'script': 'convert.js','object':null});
+});
 app.get('/users/signup', function(req, res){
 	res.render('index.ejs', {'script': 'signup.js','object':null});
 });
