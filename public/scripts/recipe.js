@@ -1,4 +1,4 @@
-
+document.title = "Recipe Scalar - "+obj.name;
 
 $('main').append( $('<h2/>').addClass('recipeTitle').text(obj.name) );
 $('main').append( $('<h3/>').addClass('scalarLabel').text('Scalar') );
