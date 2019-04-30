@@ -137,7 +137,7 @@ button{
 .ingUnitInput{
 	width:4em;
 }
-#recipeInstructionsList,#recipeInstructions{
+#recipeInstructionsList,#recipeInstructions,#conversionIngredient,.unitSection{
 	width:95%;
 	max-width:800px;
 	margin:0 auto;
@@ -167,6 +167,25 @@ button{
 	margin: 0 5px;
 	display:inline-block;
 }
+
+#conversionIngredient{
+	border-radius: 5px;
+	padding:7px;
+	margin:5px;
+	font-size: 75%;
+	text-align: center;
+}
+.unitSection{
+	text-align:right;
+}
+.unitLabel{
+	float:left;
+	margin-left:50px;
+}
+.unitAmount{
+	margin-right:50px;
+}
+
 .successMessage{
 	display:block;
 	color:rgb(0, 43, 2);
