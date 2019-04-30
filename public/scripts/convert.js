@@ -14,8 +14,8 @@ var ings = {'Water':1,
             'Salt':1.154303,
             'Butter':.9586275};
 
-var massunits = {'gram':1,'kilogram':.001,'milligram':1000,'ounce':.035274,'pound':.00220462};
-var volunits = {'milliliter':1,'liter':.001,'tablespoon':.067628,'teaspoon':.202884,'fluidoz':.033814,'cup':.00416667,'pint':.00211338,'quart':.00105669,'gallon':.000264172};
+var massunits = {'Gram (g)':1,'Kilogram (kg)':.001,'Milligram (mg)':1000,'Ounce (oz)':.035274,'Pound (lb)':.00220462};
+var volunits = {'Milliliter (mL)':1,'Liter (L)':.001,'Tablespoon (tbsp)':.067628,'Teaspoon (tsp)':.202884,'Fluid Ounce (fl.oz)':.033814,'Cup (c)':.00416667,'Pint (pt)':.00211338,'Quart (qt)':.00105669,'Gallon (gal)':.000264172};
 
 for (var ing in ings){
     ingredient.append( $('<option/>').val(ings[ing]).text(ing) );
